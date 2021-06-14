@@ -1,4 +1,19 @@
-////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+const removeDuplicates=(num)=>{
+    var x,
+        len=num.length,
+        out=[],
+        obj={};
+
+    for (x=0; x<len; x++) {
+        obj[num[x]]=0;
+    }
+    for (x in obj) {
+        out.push(x);
+    }
+    return out;
+}
+
 const GetProduct=(id)=>{
     return new Promise((resolve , reject)=> {
         let xhr = new XMLHttpRequest();
@@ -36,6 +51,11 @@ else // there is products in Cart
         Cart.push({id:products[i],q:amounts[i]});
     }
     console.log(Cart)*/
+
+
+let x=Number(localStorage.getItem('counter'))
+localStorage.setItem('counter',x+1)
+
     const row = document.getElementById('tableBody');
     for(let i=0;i<products.length;i++)
     {
@@ -44,26 +64,41 @@ else // there is products in Cart
                 x=result.data;
                 row.innerHTML+=`
                                 <tr>
-                                    <th class="s" scope="row">
+                                    <td class="item-cart">
                                         <img src="${x['ProductPicUrl']}" class="item" >
                                         ${x['Name']}
-                                    </th>
-                                    <td style="padding-top: 45px;">
+                                    </td>
+                                    <td id="price${x['ProductId']}" class="align-middle text-center">
                                         ${x['Price']}
                                     </td>
-                                    <td style="padding-top: 45px;">
-                                        ${amounts[i]}
+                                    <td class="align-middle text-center">
+                                        <input id="${x['ProductId']}" type="number" class="form-control col-sm-4 center" value="${amounts[i]}">
                                     </td>
-                                    <td style="padding-top: 45px;">
-                                        ${Number(x['Price'])*Number(amounts[i])}
-                                    </td>
+                                    <td id="total${x['ProductId']}" class="align-middle text-center">
+                                    ${x['Price']*amounts[i]}
+                                    </td>   
                                 </tr>` ;
+                                
             },
             (er) => console.log(er)
-        )
-
+            )
+            
+        }
     }
-}
+    const focusElement=()=> {
+        let active = document.activeElement;
+        let x = active.tagName;
+        if(x==="INPUT")
+        {
+            let pid = active.id;
+            console.log(pid);
+            let totalPrice=document.getElementById('total'+pid);
+            console.log(totalPrice);
+            let price=document.getElementById('price'+pid)
+            totalPrice.textContent=Number(active.value)*Number(price.textContent)
+        }
+        console.log(x);
+    }
 /*
 .then(
     (result) =>{
@@ -72,9 +107,9 @@ else // there is products in Cart
     (er) => console.log(er)
 )
 */
-let x=GetProduct('HT-1000').then(
+/* let x=GetProduct('HT-1000').then(
     (result) =>{
        console.log(result.data);
     },
     (er) => console.log(er)
-)
+) */
